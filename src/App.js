@@ -4,7 +4,7 @@ import {createStackNavigator} from 'react-navigation';
 import {LoginScreen} from './screens/LoginScreen';
 // import {UserProfileScreen} from './screens/UserProfileScreen';
 
-YellowBox.ignoreWarnings(['Warning: isMounted(...) is deprecated', 'Module RCT'])
+YellowBox.ignoreWarnings(['Warning: isMounted(...) is deprecated', 'Module RCT', 'Class RCTC'])
 
 export class App extends React.Component {
   render() {

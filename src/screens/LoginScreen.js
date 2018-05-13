@@ -1,5 +1,4 @@
 import React, {Component} from 'react'
-
 import {StyleSheet} from 'react-native'
 import {Container, Header, Title, Left, Icon, Right, Button, Body, Content, Text, Card, CardItem} from "native-base"
 
@@ -8,7 +7,7 @@ export class LoginScreen extends React.Component {
     header: (
       <Header>
         <Body>
-        <Title>Login</Title>
+        <Title>Loggin</Title>
         </Body>
       </Header>
     )
