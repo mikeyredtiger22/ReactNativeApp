@@ -1,5 +1,5 @@
 import React, {Component} from 'react'
-import {StyleSheet} from 'react-native'
+import {StyleSheet, View} from 'react-native'
 import {Container, Header, Title, Button, Body, Content, Text, Form, Item, Input} from "native-base"
 import firebase from 'react-native-firebase'
 
@@ -41,59 +41,47 @@ export class LoginScreen extends React.Component {
     ),
   });
 
-  log = (text) => {
-    this.setState({text: this.state.text + text})
-  };
-
   logout = () => {
     firebase.auth().signOut()
   };
 
   render() {
-    let userID = null;
-    if (this.state.user) {
-      userID = this.state.user.uid
-    }
     return (
       <Container>
         <Content padder>
-          <Text style={{alignSelf: "center"}}>Login</Text>
-          <Text>Auth: {userID}</Text>
           <Form>
-            <Item rounded error={!!this.state.emailError}>
+            <Item rounded error={!!this.state.emailError} style={styles.inputBoxContainer}>
               <Input
                 placeholder='Email'
                 keyboardType='email-address'
-                style={{marginHorizontal: 15}}
+                style={styles.inputBox}
                 onBlur={() => this.validateEmail()}
                 onChangeText={(email) => this.setState({email: email})}
               />
             </Item>
-            <Item>
               {!this.state.emailError ? null :
-                <Text style={{color: 'red'}}>{this.state.emailError}</Text>}
-            </Item>
-            <Item rounded error={!!this.state.passwordError}>
+                <Text style={styles.errorMessage}>{this.state.emailError}</Text>}
+            <Item rounded error={!!this.state.passwordError} style={styles.inputBoxContainer}>
               <Input
                 placeholder='Password'
                 secureTextEntry
-                style={{marginHorizontal: 15}}
+                style={styles.inputBox}
                 onBlur={() => this.validatePassword()}
                 onChangeText={(password) => this.setState({password: password})}
               />
             </Item>
-            <Text>
-              {this.state.text}
-            </Text>
-            <Item>
               {!this.state.passwordError ? null :
-                <Text style={{color: 'red'}}>{this.state.passwordError}</Text>}
-            </Item>
+                <Text style={styles.errorMessage}>{this.state.passwordError}</Text>}
+            <View style={{flex: 1, flexDirection: 'row'}}>
+              <Button style={styles.loginButtons} block success onPress={this.register}>
+                <Text>Register</Text>
+              </Button>
+              <Button style={styles.loginButtons} block success onPress={this.login}>
+                <Text>Login</Text>
+              </Button>
+            </View>
           </Form>
-          <Button block success onPress={this.login} disabled={this.state.email.length === 0}>
-            <Text>Login</Text>
-          </Button>
-          <Button onPress={this.logout}><Text>Logout</Text></Button>
+          <Button primary onPress={this.logout}><Text>Logout</Text></Button>
         </Content>
       </Container>
     )
@@ -128,33 +116,73 @@ export class LoginScreen extends React.Component {
     return false
   };
 
-  login = () => {
+  register = () => {
     let emailValid = this.validateEmail();
     let passwordValid = this.validatePassword();
-    if (!(emailValid && passwordValid)) return;
+    if (!(emailValid && passwordValid)) console.log('nope');
 
 
     firebase.auth()
-    // .signInAnonymouslyAndRetrieveData()
     .createUserAndRetrieveDataWithEmailAndPassword(this.state.email, this.state.password)
     .then(credential => {
       if (credential) {
-        console.log('defaaault app user ->', credential.user.toJSON())
+        console.log('default app user ->', credential.user.toJSON());
         this.props.navigation.navigate()
       }
     })
     .catch(error => {
-      console.warn('error:', error)
+      if (error.code === 'auth/invalid-email') {
+        this.setState({emailError: 'Not a valid email'});
+      }
+      if (error.code === 'auth/email-already-in-use') {
+        this.setState({emailError: 'This email has already been registered\nUse the Login button'});
+      }
+      if (error.code === 'auth/weak-password') {
+        this.setState({passwordError: 'Password must be more complex'});
+      }
     })
   };
+
+  login = () => {
+    firebase.auth()
+    .signInAndRetrieveDataWithEmailAndPassword(this.state.email, this.state.password)
+    .then(credential => {
+      if (credential) {
+        console.log('default app user ->', credential.user.toJSON());
+        this.props.navigation.navigate()
+      }
+    })
+    .catch(error => {
+      if (error.code === 'auth/invalid-email') {
+        this.setState({emailError: 'Not a valid email'});
+      }
+      if (error.code === 'auth/user-disabled') {
+        this.setState({emailError: 'This email has been disabled\nPlease use another'});
+      }
+      if (error.code === 'auth/user-not-found') {
+        this.setState({emailError: 'No account for this email address'});
+      }
+      if (error.code === 'auth/wrong-password') {
+        this.setState({passwordError: 'Incorrect password for this account'});
+      }
+    })
+  }
 }
 
 const styles = StyleSheet.create({
-  label: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    alignSelf: 'center',
+  inputBoxContainer: {
+    marginVertical: 10
   },
+  inputBox: {
+    marginHorizontal: 15
+  },
+  errorMessage: {
+    color: 'red'
+  },
+  loginButtons: {
+    flex: 1,
+    marginHorizontal: 5,
+    marginVertical: 10
+  }
 });
 
