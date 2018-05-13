@@ -2,7 +2,7 @@ import React from 'react';
 import {YellowBox} from 'react-native';
 import {createStackNavigator} from 'react-navigation';
 import {LoginScreen} from './screens/LoginScreen';
-// import {UserProfileScreen} from './screens/UserProfileScreen';
+import {UserProfileScreen} from './screens/UserProfileScreen';
 
 YellowBox.ignoreWarnings(['Warning: isMounted(...) is deprecated', 'Module RCT', 'Class RCTC'])
 
@@ -15,8 +15,14 @@ export class App extends React.Component {
 const RootStack = createStackNavigator(
   {
     LoginScreen:  LoginScreen,
-    // UserProfileScreen: UserProfileScreen
+    UserProfileScreen: UserProfileScreen
   },
   {
-    initialRouteName: 'LoginScreen'
+    initialRouteName: 'LoginScreen',
+    navigationOptions: {
+      headerStyle: {
+        backgroundColor: '#f4511e',
+      },
+      headerTintColor: '#fff000'
+    },
   });

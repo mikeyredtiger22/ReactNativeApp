@@ -2,6 +2,7 @@ import React, {Component} from 'react'
 import {StyleSheet, View} from 'react-native'
 import {Container, Header, Title, Button, Body, Content, Text, Form, Item, Input} from "native-base"
 import firebase from 'react-native-firebase'
+import {UserProfileScreen} from './UserProfileScreen';
 
 
 export class LoginScreen extends React.Component {
@@ -9,7 +10,6 @@ export class LoginScreen extends React.Component {
     super();
     this.state = {
       isAuthenticated: false,
-      user: null,
       email: '',
       emailError: '',
       password: '',
@@ -20,10 +20,9 @@ export class LoginScreen extends React.Component {
 
   componentDidMount() {
     this.authSubscription = firebase.auth().onAuthStateChanged((user) => {
-      this.setState({
-        user: user,
-      });
-      console.log('logged in')
+      if (user) {
+        this.openHomeScreen(user.uid);
+      }
     })
   }
 
@@ -124,12 +123,6 @@ export class LoginScreen extends React.Component {
 
     firebase.auth()
     .createUserAndRetrieveDataWithEmailAndPassword(this.state.email, this.state.password)
-    .then(credential => {
-      if (credential) {
-        console.log('default app user ->', credential.user.toJSON());
-        this.props.navigation.navigate()
-      }
-    })
     .catch(error => {
       if (error.code === 'auth/invalid-email') {
         this.setState({emailError: 'Not a valid email'});
@@ -146,12 +139,6 @@ export class LoginScreen extends React.Component {
   login = () => {
     firebase.auth()
     .signInAndRetrieveDataWithEmailAndPassword(this.state.email, this.state.password)
-    .then(credential => {
-      if (credential) {
-        console.log('default app user ->', credential.user.toJSON());
-        this.props.navigation.navigate()
-      }
-    })
     .catch(error => {
       if (error.code === 'auth/invalid-email') {
         this.setState({emailError: 'Not a valid email'});
@@ -166,7 +153,11 @@ export class LoginScreen extends React.Component {
         this.setState({passwordError: 'Incorrect password for this account'});
       }
     })
-  }
+  };
+
+  openHomeScreen = (userID) => {
+    this.props.navigation.navigate('UserProfileScreen', {userID: userID})
+  };
 }
 
 const styles = StyleSheet.create({
