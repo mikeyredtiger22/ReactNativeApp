@@ -7,7 +7,7 @@ import firebase from 'react-native-firebase'
 export class CreateProfileScreen extends React.Component {
   constructor() {
     super();
-    this.ref = firebase.firestore().collection('userTest');
+    this.ref = firebase.database().ref('usersTest');
     this.state = {
       text: '',
     }
@@ -88,6 +88,8 @@ export class CreateProfileScreen extends React.Component {
           <Button primary rounded onPress={() => this.submit()} >
             <Text>Sumbmit</Text>
           </Button>
+          {firebase.firestore.nativeModuleExists && <Text style={styles.module}>Cloud Firestore</Text>}
+          {firebase.database.nativeModuleExists && <Text style={styles.module}>Realtime Database</Text>}
         </Content>
       </Container>
     )
@@ -99,7 +101,7 @@ export class CreateProfileScreen extends React.Component {
 
   sum = () => {
     console.log('try connect');
-    firebase.firestore().enableNetwork();
+
   };
 
   submit = () => {
@@ -110,14 +112,8 @@ export class CreateProfileScreen extends React.Component {
     //Navigate to Home or Splash
     // this.props.naivgator.navigate('HomeStack');
 
-    this.ref.add({
-      title: this.state.text,
-      complete: false,
-    })
-    .then((r) => {
-      //done
-      console.log('sent');
-    })
+    this.ref.push({newobj: 'hellooo'}, (r) => console.log(r));
+    console.log('ob', objRef);
   }
 }
 
