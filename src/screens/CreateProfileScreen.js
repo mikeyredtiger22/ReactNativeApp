@@ -226,7 +226,8 @@ export class CreateProfileScreen extends React.Component {
       department: this.state.department,
       phoneNumber: this.state.phoneNumber,
     };
-    this.db.users.child(userID).set(userDetails, (r) => console.log(r));
+    this.db.users.child(userID).set(userDetails);
+    //todo navigate
   }
 }
 

@@ -2,28 +2,22 @@ import React from 'react'
 import {View} from 'react-native'
 import firebase from 'react-native-firebase'
 
-export class SplashScreen extends React.Component {
-  componentDidMount() {
-    this.authSubscription = firebase.auth().onAuthStateChanged((user) => {
-      if (!user) {
-        this.props.navigation.navigate('LoginScreen');
-      } else {
-        //if user details (locally or database)
-        // this.props.navigation.navigate('HomeStack', {userID: user.uid});
-        //else
-        this.props.navigation.navigate('CreateProfileScreen', {userID: user.uid});
-      }
-    })
-  }
-
-  componentWillUnmount() {
-    this.authSubscription()
-  }
-
-  render() {
-    return (
-      <View>
-      </View>
-    )
-  }
-}
+export const SplashScreen = function(props) {
+  firebase.auth().onAuthStateChanged((user) => {
+    if (!user) {
+      props.navigation.navigate('LoginScreen');
+    } else {
+      let userID = user.uid;
+      let userRef = firebase.database().ref('users').child(userID.toString());
+      userRef.once('value', (dataSnapshot) => {
+        if (dataSnapshot.exists()) {
+          props.navigation.navigate('HomeStack');
+          console.log('HERE');
+        } else {
+          props.navigation.navigate('CreateProfileScreen');
+        }
+      });
+    }
+  });
+  return <View/>;
+};

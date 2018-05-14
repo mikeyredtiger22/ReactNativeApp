@@ -30,7 +30,7 @@ export class UserProfileScreen extends Component {
           Welcome back User
         </Text>
         <Button rounded style={styles.search} block primary
-                onPress={this.props.navigation.push('SearchScreen')}>
+                onPress={() => this.props.navigation.push('SearchScreen')}>
           <Text>Search Employees</Text>
         </Button>
         <Image style={styles.image} source={require('../profileImage.png')}>
