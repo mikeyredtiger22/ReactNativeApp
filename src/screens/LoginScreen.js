@@ -2,7 +2,6 @@ import React, {Component} from 'react'
 import {StyleSheet, View} from 'react-native'
 import {Container, Header, Title, Button, Body, Content, Text, Form, Item, Input} from "native-base"
 import firebase from 'react-native-firebase'
-import {UserProfileScreen} from './UserProfileScreen';
 
 
 export class LoginScreen extends React.Component {
@@ -40,10 +39,6 @@ export class LoginScreen extends React.Component {
     ),
   });
 
-  logout = () => {
-    firebase.auth().signOut()
-  };
-
   render() {
     return (
       <Container>
@@ -80,7 +75,6 @@ export class LoginScreen extends React.Component {
               </Button>
             </View>
           </Form>
-          <Button primary onPress={this.logout}><Text>Logout</Text></Button>
         </Content>
       </Container>
     )
@@ -118,8 +112,7 @@ export class LoginScreen extends React.Component {
   register = () => {
     let emailValid = this.validateEmail();
     let passwordValid = this.validatePassword();
-    if (!(emailValid && passwordValid)) console.log('nope');
-
+    if (!(emailValid && passwordValid)) return;
 
     firebase.auth()
     .createUserAndRetrieveDataWithEmailAndPassword(this.state.email, this.state.password)
@@ -156,7 +149,9 @@ export class LoginScreen extends React.Component {
   };
 
   openHomeScreen = (userID) => {
-    this.props.navigation.navigate('UserProfileScreen', {userID: userID})
+    //todo store userID
+    //todo get and store user Details
+    this.props.navigation.navigate('SplashScreen')
   };
 }
 

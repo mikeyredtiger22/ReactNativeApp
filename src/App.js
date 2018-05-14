@@ -1,10 +1,13 @@
 import React from 'react';
 import {YellowBox} from 'react-native';
-import {createStackNavigator} from 'react-navigation';
+import {createStackNavigator, createSwitchNavigator} from 'react-navigation';
+import {SplashScreen} from './screens/SplashScreen';
 import {LoginScreen} from './screens/LoginScreen';
 import {UserProfileScreen} from './screens/UserProfileScreen';
+import {CreateProfileScreen} from './screens/CreateProfileScreen';
+import {SearchScreen} from './screens/SearchScreen';
 
-YellowBox.ignoreWarnings(['Warning: isMounted(...) is deprecated', 'Module RCT', 'Class RCTC'])
+YellowBox.ignoreWarnings(['Warning: isMounted(...) is deprecated', 'Module RCT', 'Class RCTC']);
 
 export class App extends React.Component {
   render() {
@@ -12,17 +15,22 @@ export class App extends React.Component {
   }
 }
 
-const RootStack = createStackNavigator(
+const HomeStack = createStackNavigator(
   {
-    LoginScreen:  LoginScreen,
-    UserProfileScreen: UserProfileScreen
+    UserProfileScreen: UserProfileScreen,
+    SearchScreen: SearchScreen
   },
   {
-    initialRouteName: 'LoginScreen',
-    navigationOptions: {
-      headerStyle: {
-        backgroundColor: '#f4511e',
-      },
-      headerTintColor: '#fff000'
-    },
+    initialRouteName: 'UserProfileScreen'
+  });
+
+const RootStack = createSwitchNavigator(
+  {
+    SplashScreen: SplashScreen,
+    LoginScreen:  LoginScreen,
+    CreateProfileScreen: CreateProfileScreen,
+    HomeStack: HomeStack
+  },
+  {
+    initialRouteName: 'SplashScreen'
   });
