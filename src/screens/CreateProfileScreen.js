@@ -217,17 +217,16 @@ export class CreateProfileScreen extends React.Component {
   };
 
   submit = () => {
-    console.log('sending.....');
     this.validateAll();
     if (this.state.errorMessage) return;
-    
-    //validate fields
-    //Store user details locally
-    //Send to database
-    //Navigate to Home or Splash
-    // this.props.naivgator.navigate('HomeStack');
-
-    this.db.users.push({newobj: 'hellooo'}, (r) => console.log(r));
+    let userID = firebase.auth().currentUser.uid;
+    let userDetails = {
+      name: this.state.name,
+      location: this.state.location,
+      department: this.state.department,
+      phoneNumber: this.state.phoneNumber,
+    };
+    this.db.users.child(userID).set(userDetails, (r) => console.log(r));
   }
 }
 
