@@ -7,6 +7,7 @@ import firebase from 'react-native-firebase'
 export class CreateProfileScreen extends React.Component {
   constructor() {
     super();
+    this.ref = firebase.firestore().collection('userTest');
     this.state = {
       text: '',
     }
@@ -33,7 +34,15 @@ export class CreateProfileScreen extends React.Component {
         <Content padder>
           <Form>
 
-            <Text style={styles.label}>First Name</Text>
+            <Text style={styles.label}>Name</Text>
+            <Item rounded style={styles.inputBoxContainer}>
+              <Input
+                style={styles.inputBox}
+                // onBlur={() => this.method()}
+                onChangeText={(email) => this.setText(email)}
+              />
+            </Item>
+            <Text style={styles.label}>Location</Text>
             <Item rounded style={styles.inputBoxContainer}>
               <Input
                 style={styles.inputBox}
@@ -41,30 +50,74 @@ export class CreateProfileScreen extends React.Component {
                 // onChangeText={(email) => this.method({email: email})}
               />
             </Item>
+            <Text style={styles.label}>Department</Text>
+            <Item rounded style={styles.inputBoxContainer}>
+              <Input
+                style={styles.inputBox}
+                // onBlur={() => this.method()}
+                // onChangeText={(email) => this.method({email: email})}
+              />
+            </Item>
+            <Text style={styles.label}>Phone number</Text>
+            <Item rounded style={styles.inputBoxContainer}>
+              <Input
+                style={styles.inputBox}
+                // onBlur={() => this.method()}
+                // onChangeText={(email) => this.method({email: email})}
+              />
+            </Item>
+            <Text style={styles.label}>Email</Text>
+            <Item rounded style={styles.inputBoxContainer}>
+              <Input
+                style={styles.inputBox}
 
-            <View style={{flex: 1, flexDirection: 'row'}}>
-              <Button style={styles.loginButtons} block success>
-                <Text>Button 1</Text>
+                // onBlur={() => this.method()}
+                // onChangeText={(email) => this.method({email: email})}
+              />
+            </Item>
+
+            <View style={styles.buttonContainer}>
+              <Button style={styles.buttons} block danger>
+                <Text>Cancel</Text>
               </Button>
-              <Button style={styles.loginButtons} block success >
-                <Text>Button 2</Text>
+              <Button style={styles.buttons} block success onPress={() => this.sum()} >
+                <Text>Register</Text>
               </Button>
             </View>
           </Form>
           <Button primary rounded onPress={() => this.submit()} >
-            <Text>Submit</Text>
+            <Text>Sumbmit</Text>
           </Button>
         </Content>
       </Container>
     )
   }
 
+  setText = (text) => {
+    this.setState({text: text});
+  };
+
+  sum = () => {
+    console.log('try connect');
+    firebase.firestore().enableNetwork();
+  };
+
   submit = () => {
+    console.log('sending.....');
     //validate fields
     //Store user details locally
     //Send to database
     //Navigate to Home or Splash
-    this.props.naivgator.navigate('HomeStack');
+    // this.props.naivgator.navigate('HomeStack');
+
+    this.ref.add({
+      title: this.state.text,
+      complete: false,
+    })
+    .then((r) => {
+      //done
+      console.log('sent');
+    })
   }
 }
 
@@ -82,6 +135,10 @@ const styles = StyleSheet.create({
     flex: 1,
     marginHorizontal: 5,
     marginVertical: 10
+  },
+  buttonContainer: {
+    flex: 1,
+    flexDirection: 'row'
   }
 });
 

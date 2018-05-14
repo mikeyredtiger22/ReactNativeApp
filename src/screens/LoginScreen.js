@@ -60,8 +60,13 @@ export class LoginScreen extends React.Component {
                 placeholder='Password'
                 secureTextEntry
                 style={styles.inputBox}
-                onBlur={() => this.validatePassword()}
-                onChangeText={(password) => this.setState({password: password})}
+                // onBlur={() => this.validatePassword()}
+                onChangeText={(password) => {
+                  this.setState({password: password});
+                  if (this.state.passwordError) {
+                    this.validatePassword()
+                  }
+                }}
               />
             </Item>
               {!this.state.passwordError ? null :
