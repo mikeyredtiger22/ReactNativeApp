@@ -9,7 +9,17 @@ export class CreateProfileScreen extends React.Component {
     super();
     this.ref = firebase.database().ref('usersTest');
     this.state = {
-      text: '',
+      name: '',
+      nameError: '',
+      location: '',
+      locationError: '',
+      department: '',
+      departmentError: '',
+      phoneNumber: '',
+      phoneNumberError: '',
+      extra: '',
+      extraError: '',
+      error: 'pp',
     }
   }
 
@@ -38,58 +48,54 @@ export class CreateProfileScreen extends React.Component {
             <Item rounded style={styles.inputBoxContainer}>
               <Input
                 style={styles.inputBox}
-                // onBlur={() => this.method()}
-                onChangeText={(email) => this.setText(email)}
+                onBlur={() => this.validateEmail()}
+                onChangeText={(text) => this.setState({name: text})}
               />
             </Item>
             <Text style={styles.label}>Location</Text>
             <Item rounded style={styles.inputBoxContainer}>
               <Input
                 style={styles.inputBox}
-                // onBlur={() => this.method()}
-                // onChangeText={(email) => this.method({email: email})}
+                onBlur={() => this.validateEmail()}
+                onChangeText={(text) => this.setState({location: text})}
               />
             </Item>
             <Text style={styles.label}>Department</Text>
             <Item rounded style={styles.inputBoxContainer}>
               <Input
                 style={styles.inputBox}
-                // onBlur={() => this.method()}
-                // onChangeText={(email) => this.method({email: email})}
+                onBlur={() => this.validateEmail()}
+                onChangeText={(text) => this.setState({department: text})}
               />
             </Item>
             <Text style={styles.label}>Phone number</Text>
             <Item rounded style={styles.inputBoxContainer}>
               <Input
                 style={styles.inputBox}
-                // onBlur={() => this.method()}
-                // onChangeText={(email) => this.method({email: email})}
+                onBlur={() => this.validateEmail()}
+                onChangeText={(text) => this.setState({phoneNumber: text})}
+                keyboardType='numeric'
               />
             </Item>
-            <Text style={styles.label}>Email</Text>
+            <Text style={styles.label}>Extra</Text>
             <Item rounded style={styles.inputBoxContainer}>
               <Input
                 style={styles.inputBox}
-
-                // onBlur={() => this.method()}
-                // onChangeText={(email) => this.method({email: email})}
+                onBlur={() => this.validateEmail()}
+                onChangeText={(text) => this.setState({extra: text})}
+                returnKeyType='done'
               />
             </Item>
-
+            <Text style={styles.errorMessage}>{this.state.error}</Text>
             <View style={styles.buttonContainer}>
               <Button style={styles.buttons} block danger>
                 <Text>Cancel</Text>
               </Button>
-              <Button style={styles.buttons} block success onPress={() => this.sum()} >
+              <Button style={styles.buttons} block success onPress={() => this.submit()}>
                 <Text>Register</Text>
               </Button>
             </View>
           </Form>
-          <Button primary rounded onPress={() => this.submit()} >
-            <Text>Sumbmit</Text>
-          </Button>
-          {firebase.firestore.nativeModuleExists && <Text style={styles.module}>Cloud Firestore</Text>}
-          {firebase.database.nativeModuleExists && <Text style={styles.module}>Realtime Database</Text>}
         </Content>
       </Container>
     )
@@ -99,9 +105,41 @@ export class CreateProfileScreen extends React.Component {
     this.setState({text: text});
   };
 
-  sum = () => {
-    console.log('try connect');
+  validateEmail = () => {
+    this.validateAll();
+  };
 
+  validateName = () => {
+    let name = this.state.name;
+    if (!name || name.length === 0) {
+      this.setState({nameError: 'Name required'});
+      return false
+    }
+    this.setState({nameError: ''});
+    return false
+  };
+
+  validateAll = () => {
+    let allFields = [
+      {val: (this.state.name), name: 'Name'},
+      {val: (this.state.location), name: 'Location'},
+      {val: (this.state.department), name: 'Department'},
+      {val: (this.state.phoneNumber), name: 'Phone number'}
+      // {val: (this.state.extra), name: 'Extra'},
+    ];
+    this.validateFields(allFields);
+  };
+
+  validateFields = (allFields) => {
+    for (let i = 0; i < allFields.length; i++) {
+      let {val, name} = allFields[i];
+
+      if (!val || val.length === 0) {
+        this.setState({error : name + ' required'});
+      } else {
+        this.setState({error: ''});
+      }
+    }
   };
 
   submit = () => {
@@ -118,23 +156,24 @@ export class CreateProfileScreen extends React.Component {
 }
 
 const styles = StyleSheet.create({
-  label: {
-
+  label: {},
+  errorMessage: {
+    color: 'red'
   },
   inputBoxContainer: {
-    marginVertical: 10
+    marginVertical: 10,
   },
   inputBox: {
-    marginHorizontal: 15
+    marginHorizontal: 15,
   },
   buttons: {
     flex: 1,
     marginHorizontal: 5,
-    marginVertical: 10
+    marginVertical: 10,
   },
   buttonContainer: {
     flex: 1,
-    flexDirection: 'row'
-  }
+    flexDirection: 'row',
+  },
 });
 
