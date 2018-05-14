@@ -7,7 +7,8 @@ import {UserProfileScreen} from './screens/UserProfileScreen';
 import {CreateProfileScreen} from './screens/CreateProfileScreen';
 import {SearchScreen} from './screens/SearchScreen';
 
-YellowBox.ignoreWarnings(['Warning: isMounted(...) is deprecated', 'Module RCT', 'Class RCTC']);
+YellowBox.ignoreWarnings(['Warning: isMounted(...) is deprecated', 'Module RCT', 'Class RCTC',
+  'Warning: Overriding previous layout animation']);
 
 export class App extends React.Component {
   render() {
