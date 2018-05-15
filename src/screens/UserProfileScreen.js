@@ -1,7 +1,8 @@
 import React, {Component} from 'react'
 import {StyleSheet, Image, View} from 'react-native';
-import {Body, Button, Card, CardItem, Container, Header, Text, Title} from "native-base"
+import {Body, Button, Card, CardItem, Container, Content, Header, Icon, Text, Title} from "native-base"
 import firebase from 'react-native-firebase'
+import Communications from 'react-native-communications';
 
 export class UserProfileScreen extends Component {
   constructor() {
@@ -45,9 +46,12 @@ export class UserProfileScreen extends Component {
     // this.setState({userID: userID});
     return (
       <Container>
+        <Content>
         <Button rounded style={styles.search} block primary
                 onPress={() => this.props.navigation.push('SearchScreen')}>
           <Text>Search Employees</Text>
+          <Icon name="search" style={styles.fieldIcon}
+                onPress={() => this.openEmail(this.state.email)}/>
         </Button>
         <Card style={styles.card}>
           <CardItem header bordered style={styles.container}>
@@ -61,50 +65,70 @@ export class UserProfileScreen extends Component {
             <Text style={styles.field}>{this.state.userData.name}</Text>
           </CardItem>
           <CardItem bordered>
-            <Text style={styles.label}>Email</Text>
-            <Text style={styles.field}>{this.state.email}</Text>
-          </CardItem>
-          <CardItem bordered>
-            <Text style={styles.label}>Phone</Text>
-            <Text style={styles.field}>{this.state.userData.phoneNumber}</Text>
-          </CardItem>
-          <CardItem bordered>
             <Text style={styles.label}>Location</Text>
             <Text style={styles.field}>{this.state.userData.location}</Text>
           </CardItem>
-          <CardItem>
+          <CardItem bordered>
             <Text style={styles.label}>Department</Text>
             <Text style={styles.field}>{this.state.userData.department}</Text>
           </CardItem>
+          <CardItem bordered>
+            <Text style={styles.label}>Email</Text>
+            <View  style={styles.fieldWithIcons}>
+              <Text style={{flex: 1}}>{this.state.email}</Text>
+              <Icon name="mail" style={styles.fieldIcon}
+                    onPress={() => this.openEmail(this.state.email)}/>
+            </View>
+          </CardItem>
+          <CardItem bordered>
+            <Text style={styles.label}>Phone</Text>
+            <View  style={styles.fieldWithIcons}>
+              <Text style={{flex: 1}}>{this.state.userData.phoneNumber}</Text>
+              <Icon name="call" style={styles.fieldIcon}
+                    onPress={() => this.openCall(this.state.phoneNumber)}/>
+              <Icon name="text" style={styles.fieldIcon}
+                    onPress={() => this.openText(this.state.phoneNumber)}/>
+            </View>
+          </CardItem>
         </Card>
-        {/*
-        search button navigate (better UI affordance)
-        image (better sizing)
-
-        Name
-        Department
-        ...
-
-        Edit profile button (move to header)
-        Logout (move to header)
-        */}
         <View style={styles.buttonContainer}>
-          <Button success style={styles.buttons}
-                  onPress={this.logout}>
+          <Button block success style={styles.buttons}
+                  onPress={this.editProfile}>
             <Text>Logout</Text>
           </Button>
           <Button block primary style={styles.buttons}
                   onPress={this.logout}>
+            <Icon name="create"/>
             <Text>Edit</Text>
           </Button>
         </View>
+        </Content>
       </Container>
     )
   };
 
+  openText = () => {
+    Communications.text(this.state.userData.phoneNumber);
+  };
+
+  openCall = () => {
+    Communications.phonecall(this.state.userData.phoneNumber, false);
+  };
+
+  openEmail = () => {
+    Communications.email([this.state.email],'','','Email Subject','\n\n\nFrom Employee Directory App.');
+  };
+
   logout = () => {
-    // firebase.auth().signOut()
-    console.log(this.state.userData.name);
+    firebase.auth().signOut()
+  };
+
+  editProfile = () => {
+    //todo
+  };
+
+  formatCase = (text) => {
+    return text.charAt(0).toUpperCase() + text.slice(1);
   };
 }
 
@@ -152,8 +176,18 @@ const styles = StyleSheet.create({
     fontWeight: 'bold'
   },
   field: {
+    paddingStart: 5,
     width: '70%',
     alignSelf: 'flex-start'
+  },
+  fieldWithIcons: {
+    flex: 1,
+    paddingStart: 5,
+    width: '70%',
+    flexDirection: 'row'
+  },
+  fieldIcon: {
+    alignSelf: 'flex-end'
   },
   buttons: {
     alignSelf: 'center',
