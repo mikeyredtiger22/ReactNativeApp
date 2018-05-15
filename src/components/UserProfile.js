@@ -2,6 +2,7 @@ import React, {Component} from 'react'
 import {StyleSheet, Image, View} from 'react-native';
 import {Card, CardItem, Icon, Text} from "native-base"
 import Communications from 'react-native-communications';
+import {Field} from './Field';
 
 export class UserProfile extends Component {
   render() {
@@ -14,36 +15,27 @@ export class UserProfile extends Component {
                    source={require('../profileImage.png')}>
             </Image>
           </CardItem>
+          <Field label={'Name'} value={this.props.userData.name}/>
+          <Field label={'Location'} value={this.props.userData.location}/>
+          <Field label={'Department'} value={this.props.userData.department}/>
           <CardItem bordered>
-            <Text style={styles.label}>Name</Text>
-            <Text style={styles.field}>{this.props.userData.name}</Text>
+            <Text style={styles.label}>Email</Text>
+            <View style={styles.fieldWithIcons}>
+              <Text style={{flex: 1}}>{this.props.userData.email}</Text>
+              <Icon name="mail" style={styles.fieldIcon}
+                    onPress={() => this.openEmail(this.props.userData.email)}/>
+            </View>
           </CardItem>
           <CardItem bordered>
-            <Text style={styles.label}>Location</Text>
-            <Text style={styles.field}>{this.props.userData.location}</Text>
+            <Text style={styles.label}>Phone</Text>
+            <View style={styles.fieldWithIcons}>
+              <Text style={{flex: 1}}>{this.props.userData.phoneNumber}</Text>
+              <Icon name="call" style={styles.fieldIcon}
+                    onPress={() => this.openCall(this.props.userData.phoneNumber)}/>
+              <Icon name="text" style={styles.fieldIcon}
+                    onPress={() => this.openText(this.props.userData.phoneNumber)}/>
+            </View>
           </CardItem>
-          <CardItem bordered>
-            <Text style={styles.label}>Department</Text>
-            <Text style={styles.field}>{this.props.userData.department}</Text>
-          </CardItem>
-          {/*<CardItem bordered>*/}
-            {/*<Text style={styles.label}>Email</Text>*/}
-            {/*<View style={styles.fieldWithIcons}>*/}
-              {/*<Text style={{flex: 1}}>{this.props.userData.email}</Text>*/}
-              {/*<Icon name="mail" style={styles.fieldIcon}/>*/}
-              {/*onPress={() => this.openEmail(this.props.userData.email)}/>*/}
-            {/*</View>*/}
-          {/*</CardItem>*/}
-          {/*<CardItem bordered>*/}
-            {/*<Text style={styles.label}>Phone</Text>*/}
-            {/*<View style={styles.fieldWithIcons}>*/}
-              {/*<Text style={{flex: 1}}>{this.props.userData.phoneNumber}</Text>*/}
-              {/*<Icon name="call" style={styles.fieldIcon}*/}
-                    {/*onPress={() => this.openCall(this.props.userData.phoneNumber)}/>*/}
-              {/*<Icon name="text" style={styles.fieldIcon}*/}
-                    {/*onPress={() => this.openText(this.props.userData.phoneNumber)}/>*/}
-            {/*</View>*/}
-          {/*</CardItem>*/}
         </Card>
       </View>
     )
@@ -117,6 +109,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
   },
   fieldIcon: {
+    paddingLeft: 15,
     alignSelf: 'flex-end',
     fontSize: 20,
   },

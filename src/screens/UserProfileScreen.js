@@ -40,10 +40,9 @@ export class UserProfileScreen extends Component {
   });
 
   render() {
-    // console.log(this.get());
-    // if (Object.keys(this.get()).length === 0) {
-    //   return <Text>Loading Profile</Text>
-    // } else {
+    if (!this.state.userData) {
+      return <View/>
+    } else {
       return (
       <Container>
         <Content>
@@ -52,7 +51,7 @@ export class UserProfileScreen extends Component {
             <Text>Search Employees</Text>
             <Icon name="search"/>
           </Button>
-          <UserProfile userData={{ name: 'W', phoneNumber: '07817440999', location: 'W', email: 'jeafoosnd.sdfbion@outlook.co.uk', department: 'W' }} />
+          <UserProfile userData={this.state.userData} />
           <View style={styles.buttonContainer}>
             <Button block success style={styles.buttons}
                     onPress={this.editProfile}>
@@ -67,12 +66,8 @@ export class UserProfileScreen extends Component {
         </Content>
       </Container>
       )
-    // }
+    }
   };
-
-  // get = () => {
-  //   return this.state.userData;
-  // };
 
   logout = () => {
     firebase.auth().signOut()
@@ -80,10 +75,6 @@ export class UserProfileScreen extends Component {
 
   editProfile = () => {
     //todo
-  };
-
-  formatCase = (text) => {
-    return text.charAt(0).toUpperCase() + text.slice(1);
   };
 }
 
