@@ -1,23 +1,19 @@
 import React, {Component} from 'react'
-import {Body, Button, Container, Content, Left, List, ListItem, Right, Text, Thumbnail} from "native-base"
+import {
+  Body, Button, Container, Content, Header, Icon,
+  Input, Item, Left, ListItem, Right, Text, Thumbnail,
+} from "native-base"
 import firebase from 'react-native-firebase';
 import {FlatList} from 'react-native';
 
 export class SearchScreen extends Component {
   constructor() {
     super();
-    // let userID = firebase.auth().currentUser.uid;
-    // let email = firebase.auth().currentUser.email;
     this.state = {
       allUserData: [],
+      filteredUserData: [],
     };
-
-    // this.loadAllUserData();
   }
-
-  loadAllUserData = () => {
-
-  };
 
   componentDidMount() {
     let allUsersDataRef = firebase.database().ref('users').orderByChild('name');
@@ -25,22 +21,32 @@ export class SearchScreen extends Component {
       dataSnapshot.forEach((dataSnapshot) => {
         let userData = {key: dataSnapshot.key, data: dataSnapshot.val()};
         console.log(userData);
-        this.setState((prevState) =>
-          ({allUserData: [...prevState.allUserData, userData]}));
+        this.setState((prevState) => ({allUserData: [...prevState.allUserData, userData]}));
+        this.setState({filteredUserData: this.state.allUserData});
       });
     });
   }
 
+  static navigationOptions = ({navigation}) => ({
+    header: null
+  });
+
   render() {
-    console.log(this.state.allUserData);
     return (
       <Container>
         {/*<Button block primary onPress={() => this.props.navigation.push('SearchScreen')}>*/}
           {/*<Text>Search</Text>*/}
         {/*</Button>*/}
+        <Header searchBar rounded>
+          <Item>
+            <Input placeholder="Search"
+                   onChangeText={(searchText) => this.search(searchText)}/>
+            <Icon name="search"/>
+          </Item>
+        </Header>
         <Content>
           <FlatList
-            data={this.state.allUserData}
+            data={this.state.filteredUserData}
             extraData={this.state}
             keyExtractor={(item) => item.key}
             renderItem={({item}) =>
@@ -54,11 +60,24 @@ export class SearchScreen extends Component {
               </ListItem>
             }
           />
-          <Button onPress={() => console.log(this.state.allUserData)}>
+          <Button>
             <Text>butt</Text>
           </Button>
         </Content>
       </Container>
     )
+  }
+
+  search = (searchText) => {
+    if (!searchText) {
+      this.setState({filteredUserData: this.state.allUserData});
+    } else {
+      this.setState({
+        filteredUserData:
+          this.state.allUserData.filter(userData =>
+            userData.data.name.toLowerCase().includes(searchText.toLowerCase())
+          )
+      });
+    }
   }
 }

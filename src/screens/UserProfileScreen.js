@@ -37,10 +37,6 @@ export class UserProfileScreen extends Component {
     ),
   });
 
-  componentDidMount() {
-    // this.setState({userData: this.props.navigation.getParam('userData', {})});
-  }
-
   render() {
     let userID = firebase.auth().currentUser.uid;
     // this.setState({userID: userID});
@@ -50,8 +46,7 @@ export class UserProfileScreen extends Component {
         <Button rounded style={styles.search} block primary
                 onPress={() => this.props.navigation.navigate('SearchScreen')}>
           <Text>Search Employees</Text>
-          <Icon name="search" style={styles.fieldIcon}
-                onPress={() => this.openEmail(this.state.email)}/>
+          <Icon name="search"/>
         </Button>
         <Card style={styles.card}>
           <CardItem header bordered style={styles.container}>
