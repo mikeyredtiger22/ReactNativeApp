@@ -71,7 +71,7 @@ export class LoginScreen extends React.Component {
             </Item>
               {!this.state.passwordError ? null :
                 <Text style={styles.errorMessage}>{this.state.passwordError}</Text>}
-            <View style={{flex: 1, flexDirection: 'row'}}>
+            <View style={styles.buttonContainer}>
               <Button style={styles.loginButtons} block success onPress={this.register}>
                 <Text>Register</Text>
               </Button>
@@ -174,6 +174,10 @@ const styles = StyleSheet.create({
     flex: 1,
     marginHorizontal: 5,
     marginVertical: 10
+  },
+  buttonContainer: {
+    flex: 1,
+    flexDirection: 'row'
   }
 });
 

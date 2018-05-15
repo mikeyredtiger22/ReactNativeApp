@@ -11,6 +11,7 @@ export const SplashScreen = function(props) {
       let userRef = firebase.database().ref('users').child(userID.toString());
       userRef.once('value', (dataSnapshot) => {
         if (dataSnapshot.exists()) {
+          //todo add user data to local storage
           props.navigation.navigate('HomeStack');
           console.log('HERE');
         } else {
