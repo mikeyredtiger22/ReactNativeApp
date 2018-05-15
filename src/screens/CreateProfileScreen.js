@@ -225,6 +225,7 @@ export class CreateProfileScreen extends React.Component {
       location: this.state.location,
       department: this.state.department,
       phoneNumber: this.state.phoneNumber,
+      email: this.firebase.auth().currentUser.email
     };
     this.db.users.child(userID).set(userDetails);
     //todo navigate

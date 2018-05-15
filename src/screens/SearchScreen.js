@@ -1,5 +1,5 @@
 import React, {Component} from 'react'
-import {Button, Container, Content, Text} from "native-base"
+import {Body, Button, Container, Content, Left, List, ListItem, Right, Text, Thumbnail} from "native-base"
 import firebase from 'react-native-firebase';
 import {FlatList} from 'react-native';
 
@@ -9,7 +9,7 @@ export class SearchScreen extends Component {
     // let userID = firebase.auth().currentUser.uid;
     // let email = firebase.auth().currentUser.email;
     this.state = {
-      allUserData: []
+      allUserData: [],
     };
 
     // this.loadAllUserData();
@@ -41,9 +41,18 @@ export class SearchScreen extends Component {
         <Content>
           <FlatList
             data={this.state.allUserData}
-            renderItem={({item}) => <Text>{item.data.name}</Text>}
-            keyExtractor={(item) => item.key}
             extraData={this.state}
+            keyExtractor={(item) => item.key}
+            renderItem={({item}) =>
+              <ListItem avatar>
+                <Left><Thumbnail source={require('../profileImage.png')}/></Left>
+                <Body>
+                <Text>{item.data.name}</Text>
+                <Text note>{item.data.department}, {item.data.location}</Text>
+                </Body>
+                <Right><Text note>{item.data.email}</Text></Right>
+              </ListItem>
+            }
           />
           <Button onPress={() => console.log(this.state.allUserData)}>
             <Text>butt</Text>
