@@ -48,7 +48,7 @@ export class UserProfileScreen extends Component {
       <Container>
         <Content>
         <Button rounded style={styles.search} block primary
-                onPress={() => this.props.navigation.push('SearchScreen')}>
+                onPress={() => this.props.navigation.navigate('SearchScreen')}>
           <Text>Search Employees</Text>
           <Icon name="search" style={styles.fieldIcon}
                 onPress={() => this.openEmail(this.state.email)}/>
@@ -187,7 +187,8 @@ const styles = StyleSheet.create({
     flexDirection: 'row'
   },
   fieldIcon: {
-    alignSelf: 'flex-end'
+    alignSelf: 'flex-end',
+    fontSize: 20
   },
   buttons: {
     alignSelf: 'center',
