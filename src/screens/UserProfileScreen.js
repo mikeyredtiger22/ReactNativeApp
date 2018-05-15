@@ -1,6 +1,6 @@
 import React, {Component} from 'react'
 import {StyleSheet, Image, View} from 'react-native';
-import {Body, Button, Container, Header, Text, Title} from "native-base"
+import {Body, Button, Card, CardItem, Container, Header, Text, Title} from "native-base"
 import firebase from 'react-native-firebase'
 
 export class UserProfileScreen extends Component {
@@ -22,21 +22,28 @@ export class UserProfileScreen extends Component {
   });
 
   render() {
-    // let userID = this.props.navigation.getParam('userId', null);
+    let userID = firebase.auth().currentUser.uid;
     // this.setState({userID: userID});
     return (
       <Container>
-        <Text style={{fontSize: 30}}>
-          Welcome back User
-        </Text>
         <Button rounded style={styles.search} block primary
                 onPress={() => this.props.navigation.push('SearchScreen')}>
           <Text>Search Employees</Text>
         </Button>
-        <Image style={styles.image} source={require('../profileImage.png')}>
-        </Image>
-
-
+        <Card style={styles.card}>
+          <CardItem style={styles.container}>
+            <Image style={styles.image}
+                   resizeMode={'cover'}
+                   source={require('../profileImage.png')}>
+            </Image>
+          </CardItem>
+          <CardItem>
+            <Text>My ID: {userID}</Text>
+          </CardItem>
+          <CardItem>
+            <Text>My ID: {userID}</Text>
+          </CardItem>
+        </Card>
         {/*
         search button navigate (better UI affordance)
         image (better sizing)
@@ -48,6 +55,7 @@ export class UserProfileScreen extends Component {
         Edit profile button (move to header)
         Logout (move to header)
         */}
+
         <View style={styles.centerContainer}>
           <Button primary rounded onPress={this.logout}>
             <Text>Logout</Text>
@@ -70,14 +78,32 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginVertical: 5
   },
+  card: {
+    flex: 0,
+    marginTop: 10,
+    width: '90%',
+    justifyContent: 'center',
+    alignItems: 'center',
+    alignSelf: 'center',
+
+  },
+  container: {
+    alignSelf: 'center',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
   image: {
-    width: '100%',
+    width: 200,
     height: 200,
     alignSelf: 'center',
-    marginTop: 10
+    marginTop: 10,
+    borderRadius: 100,
+    borderWidth: 1,
+    borderColor: 'blue',
   },
   search: {
     width: '90%',
-    alignSelf: 'center'
+    alignSelf: 'center',
+    marginTop: 10
   }
 });
