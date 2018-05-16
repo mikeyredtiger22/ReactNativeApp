@@ -1,5 +1,5 @@
 import React from 'react'
-import {StyleSheet, View} from 'react-native'
+import {Platform, StyleSheet, View} from 'react-native'
 import {
   Container, Header, Title, Button, Body,
   Content, Text, Form, Item, Input, Picker, Icon,
@@ -12,34 +12,44 @@ export class CreateProfileScreen extends React.Component {
     this.db = {
       users: firebase.database().ref('users'),
     };
+
     this.state = {
       name: '',
       nameError: '',
-      location: '',
-      locationError: '',
-      department: '',
-      departmentError: '',
       phoneNumber: '',
       phoneNumberError: '',
-      extra: '',
-      extraError: '',
-      errorMessage: '',
-      departments: [],
-      locations: [],
-      selectedDepartment: '',
       selectedLocation: '',
+      locationError: '',
+      selectedDepartment: '',
+      departmentError: '',
+      selectedRole: '',
+      roleError: '',
+      errorMessage: '',
+      departments: (Platform.OS === 'ios') ? [] : ['Select Department'],
+      locations: (Platform.OS === 'ios') ? [] : ['Select Location'],
+      roles: (Platform.OS === 'ios') ? [] : ['Select Role'],
     };
+
+    this.loadOptionsFromDatabase();
+  }
+
+  loadOptionsFromDatabase = () => {
+
+    firebase.database().ref('locations').once('value', (dataSnapshot) => {
+      console.log(dataSnapshot.forEach(loc =>
+        this.setState((prevState) => ({locations: [...prevState.locations, loc.key]}))));
+    });
 
     firebase.database().ref('departments').once('value', (dataSnapshot) => {
       console.log(dataSnapshot.forEach(dept =>
         this.setState((prevState) => ({departments: [...prevState.departments, dept.key]}))));
     });
 
-    firebase.database().ref('locations').once('value', (dataSnapshot) => {
-      console.log(dataSnapshot.forEach(loc =>
-        this.setState((prevState) => ({locations: [...prevState.locations, loc.key]}))));
+    firebase.database().ref('roles').once('value', (dataSnapshot) => {
+      console.log(dataSnapshot.forEach(role =>
+        this.setState((prevState) => ({roles: [...prevState.roles, role.key]}))));
     });
-  }
+  };
 
   static navigationOptions = ({navigation}) => ({
     header: (
@@ -51,14 +61,19 @@ export class CreateProfileScreen extends React.Component {
     ),
   });
 
+  locationPickerItems = () => {
+    return (this.state.locations.map((loc) =>
+      <Picker.Item label={loc} value={loc} key={loc}/>));
+  };
+
   departmentPickerItems = () => {
     return (this.state.departments.map((dept) =>
       <Picker.Item label={dept} value={dept} key={dept}/>));
   };
 
-  locationPickerItems = () => {
-    return (this.state.locations.map((loc) =>
-      <Picker.Item label={loc} value={loc} key={loc}/>));
+  rolePickerItems = () => {
+    return (this.state.roles.map((role) =>
+      <Picker.Item label={role} value={role} key={role}/>));
   };
 
   render() {
@@ -82,6 +97,20 @@ export class CreateProfileScreen extends React.Component {
                 style={styles.inputBox}
                 onBlur={() => this.validateName()}
                 onChangeText={(text) => this.setState({name: text})}
+              />
+            </Item>
+
+            <Text style={styles.label}>Phone number</Text>
+            {!this.state.phoneNumberError ? null :
+              <Text style={styles.errorMessage}>{this.state.phoneNumberError}</Text>}
+            <Item rounded
+                  style={styles.inputBoxContainer}
+                  error={!!this.state.phoneNumberError}>
+              <Input
+                style={styles.inputBox}
+                onBlur={() => this.validatePhoneNumber()}
+                onChangeText={(text) => this.setState({phoneNumber: text})}
+                keyboardType='numeric'
               />
             </Item>
 
@@ -120,33 +149,24 @@ export class CreateProfileScreen extends React.Component {
                 {this.departmentPickerItems()}
               </Picker>
             </View>
-            <Text style={styles.label}>Phone number</Text>
-            {!this.state.phoneNumberError ? null :
-              <Text style={styles.errorMessage}>{this.state.phoneNumberError}</Text>}
-            <Item rounded
-                  style={styles.inputBoxContainer}
-                  error={!!this.state.phoneNumberError}>
-              <Input
-                style={styles.inputBox}
-                onBlur={() => this.validatePhoneNumber()}
-                onChangeText={(text) => this.setState({phoneNumber: text})}
-                keyboardType='numeric'
-              />
-            </Item>
 
-            <Text style={styles.label}>Extra</Text>
-            {!this.state.extraError ? null :
+            <Text style={styles.label}>Role</Text>
+            {!this.state.roleError ? null :
               <Text style={styles.errorMessage}>{this.state.extraError}</Text>}
-            <Item rounded
-                  style={styles.inputBoxContainer}
-                  error={!!this.state.extraError}>
-              <Input
-                style={styles.inputBox}
-                // onBlur={() => this.v()}
-                onChangeText={(text) => this.setState({extra: text})}
-                returnKeyType='done'
-              />
-            </Item>
+            <View style={styles.pickerContainer}>
+              <Picker iosHeader="Role"
+                      iosIcon={<Icon name="ios-arrow-down-outline"/>}
+                      style={styles.picker}
+                      mode="dropdown"
+                      selectedValue={this.state.selectedRole}
+                      placeholder="Select role"
+                      placeholderIconColor="#007aff"
+                      onValueChange={(role) => {
+                        this.setState({selectedRole: role})
+                      }}>
+                {this.rolePickerItems()}
+              </Picker>
+            </View>
 
             <Text style={styles.errorMessage}>{this.state.errorMessage}</Text>
             <View style={styles.buttonContainer}>
@@ -174,28 +194,6 @@ export class CreateProfileScreen extends React.Component {
     }
   };
 
-  validateLocation = () => {
-    this.setState({errorMessage: ''});
-    if (this.empty(this.state.location)) {
-      this.setState({locationError: 'Location required'});
-      return false;
-    } else {
-      this.setState({locationError: ''});
-      return true;
-    }
-  };
-
-  validateDepartment = () => {
-    this.setState({errorMessage: ''});
-    if (this.empty(this.state.department)) {
-      this.setState({departmentError: 'Department required'});
-      return false;
-    } else {
-      this.setState({departmentError: ''});
-      return true;
-    }
-  };
-
   validatePhoneNumber = () => {
     this.setState({errorMessage: ''});
     if (this.empty(this.state.phoneNumber)) {
@@ -207,23 +205,25 @@ export class CreateProfileScreen extends React.Component {
     }
   };
 
-  // validateExtra = () => {
-  //   if (this.nonEmpty(this.state.name)) {
-  //     this.setState({nameError: 'Name required'});
-  //     return false;
-  //   } else {
-  //     this.setState({nameError: ''});
-  //     return true;
-  //   }
-  // };
+  validateLocation = () => {
+
+  };
+
+  validateDepartment = () => {
+
+  };
+
+  validateRole = () => {
+
+  };
 
   validateAll = () => {
     let allFields = [
       {validate: (this.validateName), name: 'Name'},
+      {validate: (this.validatePhoneNumber), name: 'Phone number'},
       {validate: (this.validateLocation), name: 'Location'},
       {validate: (this.validateDepartment), name: 'Department'},
-      {validate: (this.validatePhoneNumber), name: 'Phone number'},
-      // {validate: (this.validateExtra), name: 'Extra'},
+      {validate: (this.validateRole), name: 'Role'},
     ];
 
     let error = false;
@@ -253,9 +253,10 @@ export class CreateProfileScreen extends React.Component {
     let userID = firebase.auth().currentUser.uid;
     let userDetails = {
       name: this.state.name,
-      location: this.state.location,
-      department: this.state.department,
       phoneNumber: this.state.phoneNumber,
+      location: this.state.selectedLocation,
+      department: this.state.selectedDepartment,
+      role: this.state.selectedRole,
       email: firebase.auth().currentUser.email,
     };
     this.db.users.child(userID).set(userDetails);
@@ -269,12 +270,13 @@ const styles = StyleSheet.create({
     color: 'red',
   },
   inputBoxContainer: {
-    marginVertical: 10,
+    marginVertical: 15,
   },
   picker: {
     width: '100%',
   },
   pickerContainer: {
+    paddingHorizontal: 10,
     borderColor: '#e0e0e0',
     marginVertical: 10,
     borderRadius: 50,
