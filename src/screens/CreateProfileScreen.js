@@ -36,18 +36,18 @@ export class CreateProfileScreen extends React.Component {
   loadOptionsFromDatabase = () => {
 
     firebase.database().ref('locations').once('value', (dataSnapshot) => {
-      console.log(dataSnapshot.forEach(loc =>
-        this.setState((prevState) => ({locations: [...prevState.locations, loc.key]}))));
+      dataSnapshot.forEach(loc =>
+        this.setState((prevState) => ({locations: [...prevState.locations, loc.key]})));
     });
 
     firebase.database().ref('departments').once('value', (dataSnapshot) => {
-      console.log(dataSnapshot.forEach(dept =>
-        this.setState((prevState) => ({departments: [...prevState.departments, dept.key]}))));
+      dataSnapshot.forEach(dept =>
+        this.setState((prevState) => ({departments: [...prevState.departments, dept.key]})));
     });
 
     firebase.database().ref('roles').once('value', (dataSnapshot) => {
-      console.log(dataSnapshot.forEach(role =>
-        this.setState((prevState) => ({roles: [...prevState.roles, role.key]}))));
+      dataSnapshot.forEach(role =>
+        this.setState((prevState) => ({roles: [...prevState.roles, role.key]})));
     });
   };
 
@@ -173,7 +173,7 @@ export class CreateProfileScreen extends React.Component {
 
             <Text style={styles.errorMessage}>{this.state.errorMessage}</Text>
             <View style={styles.buttonContainer}>
-              <Button style={styles.buttons} block danger onPress={() => this.validateAll()}>
+              <Button style={styles.buttons} block danger onPress={() => this.cancelRegister()}>
                 <Text>Cancel</Text>
               </Button>
               <Button style={styles.buttons} block success onPress={() => this.submit()}>
@@ -185,6 +185,13 @@ export class CreateProfileScreen extends React.Component {
       </Container>
     )
   }
+
+  cancelRegister = () => {
+    firebase.auth().signOut();
+    setTimeout(() => {
+      this.props.navigation.navigate('LoginScreen');
+    }, 20);
+  };
 
   validateName = () => {
     this.setState({errorMessage: ''});
@@ -279,7 +286,7 @@ export class CreateProfileScreen extends React.Component {
   };
 
   submit = () => {
-    var validFields = this.validateAll();
+    let validFields = this.validateAll();
     if (!validFields) return;
     let userID = firebase.auth().currentUser.uid;
     let userDetails = {
