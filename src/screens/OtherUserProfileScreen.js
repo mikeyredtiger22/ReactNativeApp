@@ -46,9 +46,12 @@ export class OtherUserProfileScreen extends Component {
     if (userID === otherUserID) {
       this.setState({errorMessage: 'Cannot set yourself as manager.'})
     } else {
-      console.log('uid', typeof userID, userID);
-      firebase.database().ref('users/'+userID+'/manager').set(otherUserID);
-      firebase.database().ref('users/'+otherUserID+'/employees/'+userID).set('true');
+      firebase.database().ref('users/'+userID+'/manager').once('value', (dataSnapshot) => {
+        let previousManagerUserID = dataSnapshot.val();
+        firebase.database().ref('users/'+userID+'/manager').set(otherUserID);
+        firebase.database().ref('users/'+otherUserID+'/employees/'+userID).set('true');
+        firebase.database().ref('users/'+previousManagerUserID+'/employees/'+userID).remove();
+      });
     }
   }
 }
