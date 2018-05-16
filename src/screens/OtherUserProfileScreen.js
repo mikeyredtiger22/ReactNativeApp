@@ -1,6 +1,6 @@
 import React, {Component} from 'react'
-import {StyleSheet} from 'react-native';
-import {Container, Content} from "native-base"
+import {StyleSheet, View} from 'react-native';
+import {Button, Container, Content, Icon, Text} from "native-base"
 import {UserProfile} from '../components/UserProfile';
 
 export class OtherUserProfileScreen extends Component {
@@ -15,6 +15,16 @@ export class OtherUserProfileScreen extends Component {
       <Container>
         <Content>
           <UserProfile userData={userData}/>
+          <View style={styles.buttonContainer}>
+            <Button block success style={styles.buttons}
+                    onPress={this.logout}>
+              <Text>Add as Employee</Text>
+            </Button>
+            <Button block primary style={styles.buttons}
+                    onPress={this.editProfile}>
+              <Text>Set as Manager</Text>
+            </Button>
+          </View>
           {/*<View style={styles.buttonContainer}>*/}
             {/*<Button block success style={styles.buttons}*/}
                     {/*onPress={this.editProfile}>*/}

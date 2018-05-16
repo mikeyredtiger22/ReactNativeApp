@@ -126,7 +126,8 @@ export class CreateProfileScreen extends React.Component {
                       placeholder="Select location"
                       placeholderIconColor="#007aff"
                       onValueChange={(loc) => {
-                        this.setState({selectedLocation: loc})
+                        this.setState({selectedLocation: loc,
+                          locationError: '', errorMessage: ''})
                       }}>
                 {this.locationPickerItems()}
               </Picker>
@@ -144,7 +145,8 @@ export class CreateProfileScreen extends React.Component {
                       placeholder="Select department"
                       placeholderIconColor="#007aff"
                       onValueChange={(dept) => {
-                        this.setState({selectedDepartment: dept})
+                        this.setState({selectedDepartment: dept,
+                          departmentError: '', errorMessage: ''})
                       }}>
                 {this.departmentPickerItems()}
               </Picker>
@@ -152,7 +154,7 @@ export class CreateProfileScreen extends React.Component {
 
             <Text style={styles.label}>Role</Text>
             {!this.state.roleError ? null :
-              <Text style={styles.errorMessage}>{this.state.extraError}</Text>}
+              <Text style={styles.errorMessage}>{this.state.roleError}</Text>}
             <View style={styles.pickerContainer}>
               <Picker iosHeader="Role"
                       iosIcon={<Icon name="ios-arrow-down-outline"/>}
@@ -162,7 +164,8 @@ export class CreateProfileScreen extends React.Component {
                       placeholder="Select role"
                       placeholderIconColor="#007aff"
                       onValueChange={(role) => {
-                        this.setState({selectedRole: role})
+                        this.setState({selectedRole: role,
+                          roleError: '', errorMessage: ''});
                       }}>
                 {this.rolePickerItems()}
               </Picker>
@@ -199,6 +202,9 @@ export class CreateProfileScreen extends React.Component {
     if (this.empty(this.state.phoneNumber)) {
       this.setState({phoneNumberError: 'Phone number required'});
       return false;
+    } else if (! /\(?([0-9]{3})\)?([ .-]?)([0-9]{3})\2([0-9]{4})/.test(this.state.phoneNumber)) {
+      this.setState({phoneNumberError: 'Not a valid phone number'});
+      return false;
     } else {
       this.setState({phoneNumberError: ''});
       return true;
@@ -206,15 +212,39 @@ export class CreateProfileScreen extends React.Component {
   };
 
   validateLocation = () => {
-
+    this.setState({errorMessage: ''});
+    if (this.empty(this.state.selectedLocation) ||
+      this.state.selectedLocation === 'Select Location') {
+      this.setState({locationError: 'Location required'});
+      return false;
+    } else {
+      this.setState({locationError: ''});
+      return true;
+    }
   };
 
   validateDepartment = () => {
-
+    this.setState({errorMessage: ''});
+    if (this.empty(this.state.selectedDepartment) ||
+      this.state.selectedDepartment === 'Select Department') {
+      this.setState({departmentError: 'Department required'});
+      return false;
+    } else {
+      this.setState({departmentError: ''});
+      return true;
+    }
   };
 
   validateRole = () => {
-
+    this.setState({errorMessage: ''});
+    if (this.empty(this.state.selectedRole) ||
+      this.state.selectedRole === 'Select Role') {
+      this.setState({roleError: 'Role required'});
+      return false;
+    } else {
+      this.setState({roleError: ''});
+      return true;
+    }
   };
 
   validateAll = () => {
@@ -241,6 +271,7 @@ export class CreateProfileScreen extends React.Component {
     } else {
       this.setState({errorMessage: ''});
     }
+    return !error;
   };
 
   empty = (val) => {
@@ -248,8 +279,8 @@ export class CreateProfileScreen extends React.Component {
   };
 
   submit = () => {
-    this.validateAll();
-    if (this.state.errorMessage) return;
+    var validFields = this.validateAll();
+    if (!validFields) return;
     let userID = firebase.auth().currentUser.uid;
     let userDetails = {
       name: this.state.name,
