@@ -1,6 +1,9 @@
 import React from 'react'
 import {StyleSheet, View} from 'react-native'
-import {Container, Header, Title, Button, Body, Content, Text, Form, Item, Input} from "native-base"
+import {
+  Container, Header, Title, Button, Body,
+  Content, Text, Form, Item, Input, Picker, Icon,
+} from "native-base"
 import firebase from 'react-native-firebase'
 
 export class CreateProfileScreen extends React.Component {
@@ -21,7 +24,21 @@ export class CreateProfileScreen extends React.Component {
       extra: '',
       extraError: '',
       errorMessage: '',
-    }
+      departments: [],
+      locations: [],
+      selectedDepartment: '',
+      selectedLocation: '',
+    };
+
+    firebase.database().ref('departments').once('value', (dataSnapshot) => {
+      console.log(dataSnapshot.forEach(dept =>
+        this.setState((prevState) => ({departments: [...prevState.departments, dept.key]}))));
+    });
+
+    firebase.database().ref('locations').once('value', (dataSnapshot) => {
+      console.log(dataSnapshot.forEach(loc =>
+        this.setState((prevState) => ({locations: [...prevState.locations, loc.key]}))));
+    });
   }
 
   static navigationOptions = ({navigation}) => ({
@@ -33,6 +50,16 @@ export class CreateProfileScreen extends React.Component {
       </Header>
     ),
   });
+
+  departmentPickerItems = () => {
+    return (this.state.departments.map((dept) =>
+      <Picker.Item label={dept} value={dept} key={dept}/>));
+  };
+
+  locationPickerItems = () => {
+    return (this.state.locations.map((loc) =>
+      <Picker.Item label={loc} value={loc} key={loc}/>));
+  };
 
   render() {
     return (
@@ -47,7 +74,7 @@ export class CreateProfileScreen extends React.Component {
 
             <Text style={styles.label}>Name</Text>
             {!this.state.nameError ? null :
-            <Text style={styles.errorMessage}>{this.state.nameError}</Text>}
+              <Text style={styles.errorMessage}>{this.state.nameError}</Text>}
             <Item rounded
                   style={styles.inputBoxContainer}
                   error={!!this.state.nameError}>
@@ -60,30 +87,39 @@ export class CreateProfileScreen extends React.Component {
 
             <Text style={styles.label}>Location</Text>
             {!this.state.locationError ? null :
-            <Text style={styles.errorMessage}>{this.state.locationError}</Text>}
-            <Item rounded
-                  style={styles.inputBoxContainer}
-                  error={!!this.state.locationError}>
-              <Input
-                style={styles.inputBox}
-                onBlur={() => this.validateLocation()}
-                onChangeText={(text) => this.setState({location: text})}
-              />
-            </Item>
+              <Text style={styles.errorMessage}>{this.state.locationError}</Text>}
+            <View style={styles.pickerContainer}>
+              <Picker iosHeader="Location"
+                      iosIcon={<Icon name="ios-arrow-down-outline"/>}
+                      style={styles.picker}
+                      mode="dropdown"
+                      selectedValue={this.state.selectedLocation}
+                      placeholder="Select location"
+                      placeholderIconColor="#007aff"
+                      onValueChange={(loc) => {
+                        this.setState({selectedLocation: loc})
+                      }}>
+                {this.locationPickerItems()}
+              </Picker>
+            </View>
 
             <Text style={styles.label}>Department</Text>
             {!this.state.departmentError ? null :
               <Text style={styles.errorMessage}>{this.state.departmentError}</Text>}
-            <Item rounded
-                  style={styles.inputBoxContainer}
-                  error={!!this.state.departmentError} >
-              <Input
-                style={styles.inputBox}
-                onBlur={() => this.validateDepartment()}
-                onChangeText={(text) => this.setState({department: text})}
-              />
-            </Item>
-
+            <View style={styles.pickerContainer}>
+              <Picker iosHeader="Department"
+                      iosIcon={<Icon name="ios-arrow-down-outline"/>}
+                      style={styles.picker}
+                      mode="dropdown"
+                      selectedValue={this.state.selectedDepartment}
+                      placeholder="Select department"
+                      placeholderIconColor="#007aff"
+                      onValueChange={(dept) => {
+                        this.setState({selectedDepartment: dept})
+                      }}>
+                {this.departmentPickerItems()}
+              </Picker>
+            </View>
             <Text style={styles.label}>Phone number</Text>
             {!this.state.phoneNumberError ? null :
               <Text style={styles.errorMessage}>{this.state.phoneNumberError}</Text>}
@@ -220,7 +256,7 @@ export class CreateProfileScreen extends React.Component {
       location: this.state.location,
       department: this.state.department,
       phoneNumber: this.state.phoneNumber,
-      email: firebase.auth().currentUser.email
+      email: firebase.auth().currentUser.email,
     };
     this.db.users.child(userID).set(userDetails);
     this.props.navigation.navigate('HomeStack');
@@ -234,6 +270,16 @@ const styles = StyleSheet.create({
   },
   inputBoxContainer: {
     marginVertical: 10,
+  },
+  picker: {
+    width: '100%',
+  },
+  pickerContainer: {
+    borderColor: '#e0e0e0',
+    marginVertical: 10,
+    borderRadius: 50,
+    borderWidth: 1,
+    borderStyle: 'solid',
   },
   inputBox: {
     marginHorizontal: 15,
