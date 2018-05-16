@@ -1,6 +1,6 @@
 import React, {Component} from 'react'
 import {
-  Body, Button, Container, Content, Header, Icon,
+  Body, Container, Content, Header, Icon,
   Input, Item, Left, ListItem, Right, Text, Thumbnail,
 } from "native-base"
 import firebase from 'react-native-firebase';
@@ -12,12 +12,14 @@ export class SearchScreen extends Component {
     this.state = {
       allUserData: [],
       filteredUserData: [],
+      loading: true,
     };
   }
 
   componentDidMount() {
     let allUsersDataRef = firebase.database().ref('users').orderByChild('name');
     allUsersDataRef.once('value', (dataSnapshot) => {
+      this.setState({loading: false});
       dataSnapshot.forEach((dataSnapshot) => {
         let userData = {key: dataSnapshot.key, data: dataSnapshot.val()};
         console.log(userData);
@@ -34,9 +36,6 @@ export class SearchScreen extends Component {
   render() {
     return (
       <Container>
-        {/*<Button block primary onPress={() => this.props.navigation.push('SearchScreen')}>*/}
-          {/*<Text>Search</Text>*/}
-        {/*</Button>*/}
         <Header searchBar rounded>
           <Item>
             <Input placeholder="Search"
@@ -45,12 +44,14 @@ export class SearchScreen extends Component {
           </Item>
         </Header>
         <Content>
+          {this.state.loading? <ListItem><Body><Text>Loading Profiles</Text></Body></ListItem> : null}
           <FlatList
             data={this.state.filteredUserData}
             extraData={this.state}
             keyExtractor={(item) => item.key}
             renderItem={({item}) =>
-              <ListItem avatar>
+              <ListItem avatar onPress={() =>
+                this.props.navigation.push('OtherUserProfileScreen', {userData: item.data})}>
                 <Left><Thumbnail source={require('../profileImage.png')}/></Left>
                 <Body>
                 <Text>{item.data.name}</Text>
@@ -60,9 +61,6 @@ export class SearchScreen extends Component {
               </ListItem>
             }
           />
-          <Button>
-            <Text>butt</Text>
-          </Button>
         </Content>
       </Container>
     )

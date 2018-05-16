@@ -55,13 +55,6 @@ export class UserProfile extends Component {
 }
 
 const styles = StyleSheet.create({
-  centerContainer: {
-    flex: 1,
-    flexDirection: 'row',
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginVertical: 5,
-  },
   card: {
     flex: 0,
     marginTop: 10,
@@ -69,7 +62,6 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     alignSelf: 'center',
-
   },
   container: {
     width: 200,
@@ -86,11 +78,6 @@ const styles = StyleSheet.create({
     borderRadius: 100,
     borderWidth: 1,
     borderColor: 'blue',
-  },
-  search: {
-    width: '90%',
-    alignSelf: 'center',
-    marginTop: 10,
   },
   label: {
     width: '30%',
@@ -112,17 +99,5 @@ const styles = StyleSheet.create({
     paddingLeft: 15,
     alignSelf: 'flex-end',
     fontSize: 20,
-  },
-  buttons: {
-    alignSelf: 'center',
-    flex: 1,
-    marginHorizontal: 5,
-    marginVertical: 10,
-  },
-  buttonContainer: {
-    flex: 1,
-    flexDirection: 'row',
-    width: '92%',
-    alignSelf: 'center',
   },
 });
