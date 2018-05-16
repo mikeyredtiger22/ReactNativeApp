@@ -1,8 +1,7 @@
 import React from 'react'
-import {KeyboardAvoidingView, StyleSheet, View} from 'react-native'
+import {StyleSheet, View} from 'react-native'
 import {Container, Header, Title, Button, Body, Content, Text, Form, Item, Input} from "native-base"
 import firebase from 'react-native-firebase'
-
 
 export class CreateProfileScreen extends React.Component {
   constructor() {
@@ -128,12 +127,9 @@ export class CreateProfileScreen extends React.Component {
     )
   }
 
-  validateEmail = () => {
-  };
-
   validateName = () => {
     this.setState({errorMessage: ''});
-    if (this.nonEmpty(this.state.name)) {
+    if (this.empty(this.state.name)) {
       this.setState({nameError: 'Name required'});
       return false;
     } else {
@@ -144,7 +140,7 @@ export class CreateProfileScreen extends React.Component {
 
   validateLocation = () => {
     this.setState({errorMessage: ''});
-    if (this.nonEmpty(this.state.location)) {
+    if (this.empty(this.state.location)) {
       this.setState({locationError: 'Location required'});
       return false;
     } else {
@@ -155,7 +151,7 @@ export class CreateProfileScreen extends React.Component {
 
   validateDepartment = () => {
     this.setState({errorMessage: ''});
-    if (this.nonEmpty(this.state.department)) {
+    if (this.empty(this.state.department)) {
       this.setState({departmentError: 'Department required'});
       return false;
     } else {
@@ -166,7 +162,7 @@ export class CreateProfileScreen extends React.Component {
 
   validatePhoneNumber = () => {
     this.setState({errorMessage: ''});
-    if (this.nonEmpty(this.state.phoneNumber)) {
+    if (this.empty(this.state.phoneNumber)) {
       this.setState({phoneNumberError: 'Phone number required'});
       return false;
     } else {
@@ -199,7 +195,6 @@ export class CreateProfileScreen extends React.Component {
     for (let i = 0; i < allFields.length; i++) {
       let field = allFields[i];
       let valid = field.validate();
-      console.log(valid);
       if (!valid) {
         error = true;
         errorMessage = field.name + ' is not valid'
@@ -212,7 +207,7 @@ export class CreateProfileScreen extends React.Component {
     }
   };
 
-  nonEmpty = (val) => {
+  empty = (val) => {
     return (!val || val.length === 0);
   };
 
@@ -225,10 +220,10 @@ export class CreateProfileScreen extends React.Component {
       location: this.state.location,
       department: this.state.department,
       phoneNumber: this.state.phoneNumber,
-      email: this.firebase.auth().currentUser.email
+      email: firebase.auth().currentUser.email
     };
     this.db.users.child(userID).set(userDetails);
-    //todo navigate
+    this.props.navigation.navigate('HomeStack');
   }
 }
 

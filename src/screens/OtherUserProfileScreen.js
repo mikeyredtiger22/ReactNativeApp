@@ -1,6 +1,6 @@
 import React, {Component} from 'react'
-import {StyleSheet, View} from 'react-native';
-import {Body, Container, Content, Header, Title} from "native-base"
+import {StyleSheet} from 'react-native';
+import {Container, Content} from "native-base"
 import {UserProfile} from '../components/UserProfile';
 
 export class OtherUserProfileScreen extends Component {

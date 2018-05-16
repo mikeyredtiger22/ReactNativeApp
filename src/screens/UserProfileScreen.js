@@ -68,7 +68,10 @@ export class UserProfileScreen extends Component {
   };
 
   logout = () => {
-    firebase.auth().signOut()
+    firebase.auth().signOut();
+    setTimeout(() => {
+      this.props.navigation.navigate('LoginScreen');
+    }, 20);
   };
 
   editProfile = () => {

@@ -22,7 +22,6 @@ export class SearchScreen extends Component {
       this.setState({loading: false});
       dataSnapshot.forEach((dataSnapshot) => {
         let userData = {key: dataSnapshot.key, data: dataSnapshot.val()};
-        console.log(userData);
         this.setState((prevState) => ({allUserData: [...prevState.allUserData, userData]}));
         this.setState({filteredUserData: this.state.allUserData});
       });

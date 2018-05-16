@@ -20,7 +20,7 @@ export class LoginScreen extends React.Component {
   componentDidMount() {
     this.authSubscription = firebase.auth().onAuthStateChanged((user) => {
       if (user) {
-        this.openHomeScreen(user.uid);
+        this.props.navigation.navigate('SplashScreen');
       }
     })
   }
@@ -111,14 +111,13 @@ export class LoginScreen extends React.Component {
       return false
     }
     this.setState({passwordError: ''});
-    return false
+    return true
   };
 
   register = () => {
     let emailValid = this.validateEmail();
     let passwordValid = this.validatePassword();
     if (!(emailValid && passwordValid)) return;
-
     firebase.auth()
     .createUserAndRetrieveDataWithEmailAndPassword(this.state.email, this.state.password)
     .catch(error => {
@@ -131,6 +130,7 @@ export class LoginScreen extends React.Component {
       if (error.code === 'auth/weak-password') {
         this.setState({passwordError: 'Password must be more complex'});
       }
+      console.log('Register error:', error);
     })
   };
 
@@ -150,13 +150,8 @@ export class LoginScreen extends React.Component {
       if (error.code === 'auth/wrong-password') {
         this.setState({passwordError: 'Incorrect password for this account'});
       }
+      console.log('Login error:', error);
     })
-  };
-
-  openHomeScreen = (userID) => {
-    //todo store userID
-    //todo get and store user Details
-    this.props.navigation.navigate('SplashScreen')
   };
 }
 
