@@ -49,7 +49,8 @@ export class UserProfileScreen extends Component {
               <Text>Search Employees</Text>
               <Icon name="search"/>
             </Button>
-            <UserProfile userData={this.state.userData}/>
+            <UserProfile userData={this.state.userData}
+                         showManagerButtons={false}/>
             <View style={styles.buttonContainer}>
               <Button block success style={styles.buttons}
                       onPress={this.logout}>

@@ -37,16 +37,18 @@ export class UserProfile extends Component {
                     onPress={() => this.openText(this.props.userData.phoneNumber)}/>
             </View>
           </CardItem>
-          <View style={styles.buttonContainer}>
-            <Button block primary style={styles.buttons}
-                    onPress={this.props.viewManager}>
-              <Text>View Manager</Text>
-            </Button>
-            <Button block primary style={styles.buttons}
-                    onPress={this.editProfile}>
-              <Text>View Employees</Text>
-            </Button>
-          </View>
+          {this.props.showManagerButtons ?
+            <View style={styles.buttonContainer}>
+              <Button block primary style={styles.buttons}
+                      onPress={this.props.viewManager}>
+                <Text>View Manager</Text>
+              </Button>
+              <Button block primary style={styles.buttons}
+                      onPress={this.editProfile}>
+                <Text>View Employees</Text>
+              </Button>
+            </View>
+          : null}
         </Card>
       </View>
     )

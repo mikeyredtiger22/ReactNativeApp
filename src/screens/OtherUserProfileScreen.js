@@ -23,12 +23,12 @@ export class OtherUserProfileScreen extends Component {
       <Container>
         <Content>
           <UserProfile userData={userData}
+                       showManagerButtons={true}
                        viewManager={this.viewManager}/>
           {!this.state.errorMessage ? null :
             <Text style={styles.errorMessage}>{this.state.errorMessage}</Text>}
-            {/*todo if manager - remove manager button*/}
           <View style={styles.buttonContainer}>
-            <Button block sucess style={styles.buttons}
+            <Button block success style={styles.buttons}
                     onPress={this.setManager}>
               <Text>Set As My manager</Text>
             </Button>
