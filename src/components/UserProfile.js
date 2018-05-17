@@ -44,7 +44,7 @@ export class UserProfile extends Component {
                 <Text>View Manager</Text>
               </Button>
               <Button block primary style={styles.buttons}
-                      onPress={this.editProfile}>
+                      onPress={this.props.viewEmployees}>
                 <Text>View Employees</Text>
               </Button>
             </View>

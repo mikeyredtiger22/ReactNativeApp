@@ -13,17 +13,23 @@ export class SearchScreen extends Component {
       allUserData: [],
       filteredUserData: [],
       loading: true,
+      filterIDs: null,
     };
   }
 
   componentDidMount() {
+    const userIDs = this.props.navigation.getParam('userIDs', null);
+    if (userIDs) {
+      this.setState({filterIDs: userIDs});
+    }
+
     let allUsersDataRef = firebase.database().ref('users').orderByChild('name');
     allUsersDataRef.once('value', (dataSnapshot) => {
       this.setState({loading: false});
       dataSnapshot.forEach((dataSnapshot) => {
         let userData = {key: dataSnapshot.key, data: dataSnapshot.val()};
         this.setState((prevState) => ({allUserData: [...prevState.allUserData, userData]}));
-        this.setState({filteredUserData: this.state.allUserData});
+        this.search('');
       });
     });
   }
@@ -67,15 +73,15 @@ export class SearchScreen extends Component {
   }
 
   search = (searchText) => {
-    if (!searchText) {
-      this.setState({filteredUserData: this.state.allUserData});
-    } else {
-      this.setState({
-        filteredUserData:
-          this.state.allUserData.filter(userData =>
-            userData.data.name.toLowerCase().includes(searchText.toLowerCase())
-          )
-      });
+    var filteredUserData = this.state.allUserData;
+    if (this.state.filterIDs) {
+      filteredUserData = filteredUserData.filter(userData =>
+        this.state.filterIDs.includes(userData.key));
     }
+    if (searchText) {
+      filteredUserData = filteredUserData.filter(userData =>
+        userData.data.name.toLowerCase().includes(searchText.toLowerCase()));
+    }
+    this.setState({filteredUserData: filteredUserData});
   }
 }

@@ -24,7 +24,8 @@ export class OtherUserProfileScreen extends Component {
         <Content>
           <UserProfile userData={userData}
                        showManagerButtons={true}
-                       viewManager={this.viewManager}/>
+                       viewManager={this.viewManager}
+                       viewEmployees={this.viewEmployees}/>
           {!this.state.errorMessage ? null :
             <Text style={styles.errorMessage}>{this.state.errorMessage}</Text>}
           <View style={styles.buttonContainer}>
@@ -71,6 +72,14 @@ export class OtherUserProfileScreen extends Component {
       }
     });
   };
+
+  viewEmployees = () => {
+    const otherUserData = this.props.navigation.getParam('otherUserData', {});
+    const employees = otherUserData.employees;
+    if (employees) {
+      this.props.navigation.push('SearchScreen', {userIDs: Object.keys(employees)});
+    }
+  }
 }
 
 const styles = StyleSheet.create({
