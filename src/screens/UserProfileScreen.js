@@ -52,14 +52,9 @@ export class UserProfileScreen extends Component {
             <UserProfile userData={this.state.userData}
                          showManagerButtons={false}/>
             <View style={styles.buttonContainer}>
-              <Button block success style={styles.buttons}
+              <Button block danger style={styles.buttons}
                       onPress={this.logout}>
                 <Text>Logout</Text>
-              </Button>
-              <Button block primary style={styles.buttons}
-                      onPress={this.editProfile}>
-                <Text>Edit</Text>
-                <Icon name="create"/>
               </Button>
             </View>
           </Content>
@@ -73,10 +68,6 @@ export class UserProfileScreen extends Component {
     setTimeout(() => {
       this.props.navigation.navigate('LoginScreen');
     }, 20);
-  };
-
-  editProfile = () => {
-    //todo
   };
 }
 
