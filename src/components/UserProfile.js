@@ -1,6 +1,6 @@
 import React, {Component} from 'react'
 import {StyleSheet, Image, View} from 'react-native';
-import {Card, CardItem, Icon, Text} from "native-base"
+import {Button, Card, CardItem, Icon, Text} from "native-base"
 import Communications from 'react-native-communications';
 import {Field} from './Field';
 
@@ -18,6 +18,7 @@ export class UserProfile extends Component {
           <Field label={'Name'} value={this.props.userData.name}/>
           <Field label={'Location'} value={this.props.userData.location}/>
           <Field label={'Department'} value={this.props.userData.department}/>
+          <Field label={'Role'} value={this.props.userData.role}/>
           <CardItem bordered>
             <Text style={styles.label}>Email</Text>
             <View style={styles.fieldWithIcons}>
@@ -36,6 +37,16 @@ export class UserProfile extends Component {
                     onPress={() => this.openText(this.props.userData.phoneNumber)}/>
             </View>
           </CardItem>
+          <View style={styles.buttonContainer}>
+            <Button block primary style={styles.buttons}
+                    onPress={this.props.viewManager}>
+              <Text>View Manager</Text>
+            </Button>
+            <Button block primary style={styles.buttons}
+                    onPress={this.editProfile}>
+              <Text>View Employees</Text>
+            </Button>
+          </View>
         </Card>
       </View>
     )
@@ -99,5 +110,17 @@ const styles = StyleSheet.create({
     paddingLeft: 15,
     alignSelf: 'flex-end',
     fontSize: 20,
+  },
+  buttons: {
+    alignSelf: 'center',
+    flex: 1,
+    marginHorizontal: 5,
+    marginVertical: 10,
+  },
+  buttonContainer: {
+    flex: 1,
+    flexDirection: 'row',
+    width: '92%',
+    alignSelf: 'center',
   },
 });

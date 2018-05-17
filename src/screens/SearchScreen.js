@@ -51,7 +51,7 @@ export class SearchScreen extends Component {
             renderItem={({item}) =>
               <ListItem avatar onPress={() =>
                 this.props.navigation.push('OtherUserProfileScreen',
-                  {userData: item.data, otherUserID: item.key})}>
+                  {otherUserData: item.data, otherUserID: item.key})}>
                 <Left><Thumbnail source={require('../profileImage.png')}/></Left>
                 <Body>
                 <Text>{item.data.name}</Text>

@@ -14,25 +14,23 @@ export class OtherUserProfileScreen extends Component {
   }
 
   static navigationOptions = ({navigation}) => ({
-    title: navigation.state.params.userData.name,
+    title: navigation.state.params.otherUserData.name,
   });
 
   render() {
-    const userData = this.props.navigation.getParam('userData', {});
+    const userData = this.props.navigation.getParam('otherUserData', {});
     return (
       <Container>
         <Content>
-          <UserProfile userData={userData}/>
+          <UserProfile userData={userData}
+                       viewManager={this.viewManager}/>
           {!this.state.errorMessage ? null :
             <Text style={styles.errorMessage}>{this.state.errorMessage}</Text>}
+            {/*todo if manager - remove manager button*/}
           <View style={styles.buttonContainer}>
-            <Button block success style={styles.buttons}
-                    onPress={this.logout}>
-              <Text>Default..</Text>
-            </Button>
-            <Button block primary style={styles.buttons}
+            <Button block sucess style={styles.buttons}
                     onPress={this.setManager}>
-              <Text>Set as Manager</Text>
+              <Text>Set As My manager</Text>
             </Button>
           </View>
         </Content>
@@ -53,7 +51,26 @@ export class OtherUserProfileScreen extends Component {
         firebase.database().ref('users/'+previousManagerUserID+'/employees/'+userID).remove();
       });
     }
-  }
+  };
+
+  viewManager = () => {
+    const otherUserData = this.props.navigation.getParam('otherUserData', {});
+    const managerID = otherUserData.manager;
+    if (!managerID) {
+      this.setState({errorMessage: 'This user does not have a manager'});
+      return;
+    }
+
+    let userManagerDataRef = firebase.database().ref('users').child(managerID);
+    userManagerDataRef.once('value', (dataSnapshot) => {
+      if (!dataSnapshot.exists()) {
+        this.setState({errorMessage: 'This user does not have a manager'});
+      } else {
+        this.props.navigation.push('OtherUserProfileScreen',
+          {otherUserData: dataSnapshot.val(), otherUserID: managerID});
+      }
+    });
+  };
 }
 
 const styles = StyleSheet.create({
