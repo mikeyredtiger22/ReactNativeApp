@@ -78,6 +78,8 @@ export class OtherUserProfileScreen extends Component {
     const employees = otherUserData.employees;
     if (employees) {
       this.props.navigation.push('SearchScreen', {userIDs: Object.keys(employees)});
+    } else {
+      this.setState({errorMessage: 'This user has no employees'});
     }
   }
 }

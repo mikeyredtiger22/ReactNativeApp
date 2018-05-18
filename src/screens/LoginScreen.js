@@ -135,6 +135,9 @@ export class LoginScreen extends React.Component {
   };
 
   login = () => {
+    let emailValid = this.validateEmail();
+    let passwordValid = this.validatePassword();
+    if (!(emailValid && passwordValid)) return;
     firebase.auth()
     .signInAndRetrieveDataWithEmailAndPassword(this.state.email, this.state.password)
     .catch(error => {

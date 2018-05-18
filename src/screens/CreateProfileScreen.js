@@ -87,7 +87,7 @@ export class CreateProfileScreen extends React.Component {
         <Content padder>
           <Form>
 
-            <Text style={styles.label}>Name</Text>
+            <Text>Name</Text>
             {!this.state.nameError ? null :
               <Text style={styles.errorMessage}>{this.state.nameError}</Text>}
             <Item rounded
@@ -100,7 +100,7 @@ export class CreateProfileScreen extends React.Component {
               />
             </Item>
 
-            <Text style={styles.label}>Phone number</Text>
+            <Text>Phone number</Text>
             {!this.state.phoneNumberError ? null :
               <Text style={styles.errorMessage}>{this.state.phoneNumberError}</Text>}
             <Item rounded
@@ -114,7 +114,7 @@ export class CreateProfileScreen extends React.Component {
               />
             </Item>
 
-            <Text style={styles.label}>Location</Text>
+            <Text>Location</Text>
             {!this.state.locationError ? null :
               <Text style={styles.errorMessage}>{this.state.locationError}</Text>}
             <View style={styles.pickerContainer}>
@@ -133,7 +133,7 @@ export class CreateProfileScreen extends React.Component {
               </Picker>
             </View>
 
-            <Text style={styles.label}>Department</Text>
+            <Text>Department</Text>
             {!this.state.departmentError ? null :
               <Text style={styles.errorMessage}>{this.state.departmentError}</Text>}
             <View style={styles.pickerContainer}>
@@ -152,7 +152,7 @@ export class CreateProfileScreen extends React.Component {
               </Picker>
             </View>
 
-            <Text style={styles.label}>Role</Text>
+            <Text>Role</Text>
             {!this.state.roleError ? null :
               <Text style={styles.errorMessage}>{this.state.roleError}</Text>}
             <View style={styles.pickerContainer}>
@@ -303,7 +303,6 @@ export class CreateProfileScreen extends React.Component {
 }
 
 const styles = StyleSheet.create({
-  label: {},
   errorMessage: {
     color: 'red',
   },
